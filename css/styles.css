@@ -472,14 +472,32 @@
             z-index: 3;
         }
 
-        /* Hero-specific particle styling to avoid conflicts */
-        .hero .floating-particles .particle {
+    /* Hero-specific particle styling - softened to avoid "fly-like" jitter */
+    .hero .floating-particles .particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: radial-gradient(circle, rgba(255, 0, 0, 0.6) 0%, transparent 70%);
+            /* slightly larger for a softer presence */
+            width: var(--particle-size, 6px);
+            height: var(--particle-size, 6px);
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.45) 0%, transparent 70%);
             border-radius: 50%;
-            animation: particleFloat 8s ease-in-out infinite;
+            filter: blur(0.6px);
+            opacity: 0.85;
+            pointer-events: none;
+            transform: translate3d(0,0,0);
+            will-change: transform, opacity;
+            /* use CSS variable-friendly duration and allow inline animation-delay on elements */
+            animation-name: particleFloatGentle;
+            animation-duration: var(--particle-duration, 14s);
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+
+        /* Generic particle selector used elsewhere (keep consistent gentle motion) */
+        .particle {
+            animation-name: particleFloatGentle;
+            animation-duration: var(--particle-duration, 14s);
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
         }
 
         /* Hero Unconventional Text Rain System */
@@ -685,11 +703,35 @@
             50% { transform: translateY(-18px) rotateY(180deg); }
         }
 
+        /* Gentler particle motion to avoid "fly-like" jittering */
+        @keyframes particleFloatGentle {
+            0% {
+                transform: translateY(110vh) translateX(0px) translateZ(0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.75;
+                transform: translateY(80vh) translateX(calc(var(--drift-x, 0px) * 0.25)) translateZ(0);
+            }
+            50% {
+                opacity: 0.9;
+                transform: translateY(45vh) translateX(calc(var(--drift-x, 0px) * 0.5)) translateZ(0) rotate(var(--rotate, 0deg));
+            }
+            80% {
+                opacity: 0.7;
+                transform: translateY(15vh) translateX(calc(var(--drift-x, 0px) * 0.85)) translateZ(0);
+            }
+            100% {
+                transform: translateY(-10vh) translateX(calc(var(--drift-x, 0px))) translateZ(0);
+                opacity: 0;
+            }
+        }
+
+        /* Backwards-compatible alias if other rules reference the old name */
         @keyframes particleFloat {
-            0% { transform: translateY(100vh) translateX(0px); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-20px) translateX(50px); opacity: 0; }
+            0% { transform: translateY(110vh) translateX(0px); opacity: 0; }
+            50% { transform: translateY(45vh) translateX(20px); opacity: 0.85; }
+            100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
         }
 
         /* 3D Interactive Canvas */
@@ -1265,6 +1307,8 @@
             padding: 8rem 0;
             position: relative;
             overflow: hidden;
+            /* ensure anchor/scroll into view accounts for fixed navbar */
+            scroll-margin-top: -100px;
         }
 
         .container {
@@ -6264,14 +6308,17 @@
             pointer-events: none;
         }
 
-        /* Creative section-specific particle styling */
+        /* Creative section-specific particle styling - gentle orbit */
         .creative-section .particle {
             position: absolute;
-            width: 6px;
-            height: 6px;
-            background: #8A2BE2;
+            width: 7px;
+            height: 7px;
+            background: radial-gradient(circle at 35% 35%, rgba(138,43,226,0.9) 0%, rgba(138,43,226,0.6) 40%, transparent 70%);
             border-radius: 50%;
-            animation: particleOrbit 4s linear infinite;
+            filter: blur(0.8px);
+            opacity: 0.95;
+            will-change: transform, opacity;
+            animation: particleOrbitGentle 9s ease-in-out infinite;
         }
 
         .particle:nth-child(1) {
@@ -6292,15 +6339,33 @@
             animation-delay: 2.6s;
         }
 
+        @keyframes particleOrbitGentle {
+            0% {
+                transform: rotate(0deg) translateX(90px) rotate(0deg) translateZ(0);
+                opacity: 0.85;
+            }
+            25% {
+                transform: rotate(90deg) translateX(95px) rotate(-45deg) translateZ(0);
+                opacity: 0.95;
+            }
+            50% {
+                transform: rotate(180deg) translateX(90px) rotate(-90deg) translateZ(0);
+                opacity: 0.9;
+            }
+            75% {
+                transform: rotate(270deg) translateX(95px) rotate(-135deg) translateZ(0);
+                opacity: 0.95;
+            }
+            100% {
+                transform: rotate(360deg) translateX(90px) rotate(-360deg) translateZ(0);
+                opacity: 0.85;
+            }
+        }
+
+        /* Backwards-compatible alias */
         @keyframes particleOrbit {
-            0% { 
-                transform: rotate(0deg) translateX(100px) rotate(0deg);
-                opacity: 1;
-            }
-            100% { 
-                transform: rotate(360deg) translateX(100px) rotate(-360deg);
-                opacity: 1;
-            }
+            0% { transform: rotate(0deg) translateX(90px) rotate(0deg); opacity: 0.85; }
+            100% { transform: rotate(360deg) translateX(90px) rotate(-360deg); opacity: 0.85; }
         }
 
         /* Creative Energy Orbs */

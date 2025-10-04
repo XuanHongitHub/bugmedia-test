@@ -84,19 +84,15 @@ function initNavbarEffects() {
         navbar.classList.toggle('scrolled', scrolled);
     });
 
-    // Smooth scroll navigation with proper offset
+    // Smooth scroll navigation (uses CSS scroll-margin-top on sections)
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
-            if (href.startsWith('#')) {
+            if (href && href.startsWith('#')) {
                 e.preventDefault();
                 const target = document.querySelector(href);
                 if (target) {
-                    const offsetTop = target.offsetTop - 100;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             }
         });
